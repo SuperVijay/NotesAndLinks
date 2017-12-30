@@ -1,0 +1,109 @@
+
+
+Git branching model:
+http://nvie.com/posts/a-successful-git-branching-model/
+
+
+2 main streams: master  develop
+
+origin/master -> main branch where source code HEAD always
+points production-ready stage code. Every commit om master 
+is a new release. Every commit on master must be tagged with the release number.
+
+origin/devlop -> main branch where HEAD always a state with latest dev changes for next release.
+automatic nighlty builds are from this branch.
+
+all changes merged from develop to master and tagged with rel number.
+
+Next to the main branches, master and develop, there are different branches we may use: 
+Feature
+Release iat
+Hotfix 
+
+Feature branches from develop and merges back to develop.
+
+ Finished features added to develop for inclusion in next release.
+git checkout -b myfeature develop
+git checkout develop
+git merge --no-ff myfeature
+git branch -d myfeature
+git push origin develop
+
+
+
+Release branches from develop and merge back to develop and master.
+
+Release branches are for prepping up for new prod release.
+
+git checkout -b release-1.2 develop
+<<some changes>>
+git commit -a -m "bumped versionnumber to 1.2"
+
+This branch exists for a while until the release is rolled out.
+during this time bug fixes are applied to this branch.
+Adding large new features is prohibited to this release or iat branch.
+
+Large changes must be merged to develop and therefore need to wait for next big release.
+Changes made on release must also be put back on develop, so future relleases contain thesse bug fixes.
+
+git checkout master
+git merge --no-ff rlease-1.2
+git tag -a 1.2
+
+
+git checkout develop
+git merge --no-ff release-1.2  --> this may lead to conflicts
+
+git branch -d release-1.2
+
+
+Hot fix branches:
+  branch from master and mege back to develop and master.
+
+unplanned released go here.
+
+git checkout -b hotfix-1.2.1 master
+<<some changes for hotfix>>
+git commit -a -m "hot fix changes"
+
+# now merge it back to master
+git checkout master
+git merge --no-ff hotfix-1.2.1
+git tag -a 1.2.1
+
+# and merge it back to develop as well
+git checkout develop
+git merge --no-ff hotfix-1.2.1
+
+--> If a IAT branch is active, then merge it to IAT branch instead of develop as you expect the IAT branch will eventually merge to develop anyway.
+
+# and finally remove the hotfix branch
+git branch -d hotfix-1.2.1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
